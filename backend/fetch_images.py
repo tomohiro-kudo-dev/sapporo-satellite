@@ -271,7 +271,7 @@ def main():
     parser = argparse.ArgumentParser(description="Sentinel-2衛星画像取得スクリプト")
     parser.add_argument("--year", type=int, help="取得する年 (例: 2024)")
     parser.add_argument("--month", type=str, help="取得する年月 (例: 2024-06)")
-    parser.add_argument("--max-cloud", type=float, default=MAX_CLOUD_COVERAGE, help="雲量上限(%)")
+　　parser.add_argument("--max-cloud", type=float, default=MAX_CLOUD_COVERAGE, help="雲量上限(percent)")
     parser.add_argument("--start", type=str, default=START_DATE, help="取得開始日 (YYYY-MM-DD)")
     args = parser.parse_args()
 
