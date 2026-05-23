@@ -62,13 +62,14 @@ export default function SatelliteMap({ selectedImage, opacity }: SatelliteMapPro
         overlayRef.current = null;
       }
 
-      const date = selectedImage.date;
-      const apiBase = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
-      const tileUrl = `${apiBase}/api/tiles/{z}/{x}/{y}?date=${date}`;
+      // 年を取得してEOXのURLを生成
+      const year = selectedImage.year;
+      const validYear = Math.min(Math.max(year, 2018), 2024);
+      const tileUrl = `https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless-${validYear}_3857/default/g/{z}/{y}/{x}.jpg`;
 
       const layer = L.tileLayer(tileUrl, {
         opacity: opacity,
-        attribution: "Copernicus Sentinel-2 © ESA",
+        attribution: 'Sentinel-2 cloudless <a href="https://eox.at">EOX IT Services GmbH</a>',
         tileSize: 256,
         maxZoom: 18,
       });
