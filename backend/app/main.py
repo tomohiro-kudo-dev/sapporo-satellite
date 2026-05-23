@@ -9,7 +9,7 @@ from pathlib import Path
 import os
 import subprocess
 
-from app.api import images, tiles
+from app.api import images, tiles, gee_tiles
 
 
 @asynccontextmanager
@@ -44,6 +44,7 @@ app.mount("/static", StaticFiles(directory="data"), name="static")
 
 app.include_router(images.router, prefix="/api/images", tags=["images"])
 app.include_router(tiles.router, prefix="/api/tiles", tags=["tiles"])
+app.include_router(gee_tiles.router, prefix="/api/gee", tags=["gee"])
 
 
 @app.get("/")
