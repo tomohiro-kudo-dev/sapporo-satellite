@@ -19,7 +19,12 @@ async def lifespan(app: FastAPI):
     metadata_dir = Path("data/metadata")
     if not list(metadata_dir.glob("*.json")):
         import subprocess
-        subprocess.run(["python", "generate_mock_data.py"], cwd="/opt/render/project/src/backend")
+        cdse_user = os.getenv("CDSE_USER")
+        cdse_password = os.getenv("CDSE_PASSWORD")
+        if cdse_user and cdse_password:
+            subprocess.run(["python", "fetch_images.py"], cwd="/opt/render/project/src/backend")
+        else:
+            subprocess.run(["python", "generate_mock_data.py"], cwd="/opt/render/project/src/backend")
     yield
 
 
