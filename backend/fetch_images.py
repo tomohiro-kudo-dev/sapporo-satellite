@@ -33,7 +33,9 @@ BBOX_HALF = 0.03     # 表示範囲 (約3km)
 BBOX = (
     LON - BBOX_HALF,  # west
     LAT - BBOX_HALF,  # south
-    LON + BBOX_HALFdef download_thumbnail(product_id: str, token: str, save_path: Path) -> bool:
+    LON + BBOX_HALFdef
+)
+  download_thumbnail(product_id: str, token: str, save_path: Path) -> bool:
     """サムネイル画像をダウンロードする"""
     try:
         # Copernicus Browser のサムネイルURL
