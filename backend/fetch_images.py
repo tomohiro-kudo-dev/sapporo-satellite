@@ -151,9 +151,13 @@ def download_thumbnail(product_id: str, token: str, save_path: Path) -> bool:
 
 def extract_cloud_coverage(product: dict) -> float:
     """プロダクトのメタデータから雲量を取得"""
-    attrs = product.get("Attributes", {}).get("OData.CSC.DoubleAttribute", [])
+    attrs = product.get("Attributes", [])
+    if isinstance(attrs, dict):
+        attrs = attrs.get("OData.CSC.DoubleAttribute", [])
+    if not isinstance(attrs, list):
+        return 100.0
     for attr in attrs:
-        if attr.get("Name") == "cloudCover":
+        if isinstance(attr, dict) and attr.get("Name") == "cloudCover":
             return round(attr.get("Value", 100), 1)
     return 100.0
 
