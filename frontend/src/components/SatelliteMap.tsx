@@ -56,4 +56,35 @@ export default function SatelliteMap({ selectedImage, opacity }: SatelliteMapPro
   useEffect(() => {
     if (!leafletMapRef.current || !selectedImage) return;
 
-    import("leaflet").then((L
+    import("leaflet").then((L) => {
+      if (overlayRef.current) {
+        overlayRef.current.remove();
+        overlayRef.current = null;
+      }
+
+      const date = selectedImage.date;
+      const apiBase = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+      const tileUrl = `${apiBase}/api/gee/{z}/{x}/{y}?date=${date}`;
+
+      const layer = L.tileLayer(tileUrl, {
+        opacity: opacity,
+        attribution: "Google Earth Engine · Copernicus Sentinel-2 © ESA",
+        tileSize: 256,
+        maxZoom: 18,
+      });
+
+      layer.addTo(leafletMapRef.current);
+      overlayRef.current = layer;
+    });
+  }, [selectedImage]);
+
+  useEffect(() => {
+    if (overlayRef.current) {
+      overlayRef.current.setOpacity(opacity);
+    }
+  }, [opacity]);
+
+  return (
+    <div ref={mapRef} className="w-full h-full" style={{ background: "#0a0f14" }} />
+  );
+}
