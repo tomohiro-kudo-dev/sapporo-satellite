@@ -56,36 +56,4 @@ export default function SatelliteMap({ selectedImage, opacity }: SatelliteMapPro
   useEffect(() => {
     if (!leafletMapRef.current || !selectedImage) return;
 
-    import("leaflet").then((L) => {
-      if (overlayRef.current) {
-        overlayRef.current.remove();
-        overlayRef.current = null;
-      }
-
-      // 年を取得してEOXのURLを生成
-      const year = selectedImage.year;
-      const validYear = Math.min(Math.max(year, 2018), 2024);
-      const tileUrl = `https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless-${validYear}_3857/default/g/{z}/{y}/{x}.jpg`;
-
-      const layer = L.tileLayer(tileUrl, {
-        opacity: opacity,
-        attribution: 'Sentinel-2 cloudless <a href="https://eox.at">EOX IT Services GmbH</a>',
-        tileSize: 256,
-        maxZoom: 18,
-      });
-
-      layer.addTo(leafletMapRef.current);
-      overlayRef.current = layer;
-    });
-  }, [selectedImage]);
-
-  useEffect(() => {
-    if (overlayRef.current) {
-      overlayRef.current.setOpacity(opacity);
-    }
-  }, [opacity]);
-
-  return (
-    <div ref={mapRef} className="w-full h-full" style={{ background: "#0a0f14" }} />
-  );
-}
+    import("leaflet").then((L
