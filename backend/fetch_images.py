@@ -33,117 +33,37 @@ BBOX_HALF = 0.03     # 表示範囲 (約3km)
 BBOX = (
     LON - BBOX_HALF,  # west
     LAT - BBOX_HALF,  # south
-    LON + BBOX_HALF,  # east
-    LAT + BBOX_HALF,  # north
-)
-
-MAX_CLOUD_COVERAGE = 20   # 雲量上限 (%)
-START_DATE = "2020-01-01" # 取得開始日
-COLLECTION = "SENTINEL-2"
-
-IMAGES_DIR = Path("data/images")
-METADATA_DIR = Path("data/metadata")
-
-CDSE_TOKEN_URL = "https://identity.dataspace.copernicus.eu/auth/realms/CDSE/protocol/openid-connect/token"
-CDSE_SEARCH_URL = "https://catalogue.dataspace.copernicus.eu/odata/v1/Products"
-CDSE_DOWNLOAD_BASE = "https://download.dataspace.copernicus.eu/odata/v1/Products"
-
-# ==========================
-
-
-def get_access_token(username: str, password: str) -> str:
-    """CopernicusのOAuth2トークンを取得"""
-    resp = requests.post(
-        CDSE_TOKEN_URL,
-        data={
-            "grant_type": "password",
-            "username": username,
-            "password": password,
-            "client_id": "cdse-public",
-        },
-        timeout=30,
-    )
-    resp.raise_for_status()
-    token = resp.json()["access_token"]
-    print("✅ 認証成功")
-    return token
-
-
-def search_sentinel2(
-    token: str,
-    start_date: str,
-    end_date: str,
-    max_cloud: float = MAX_CLOUD_COVERAGE,
-) -> list[dict]:
-    """
-    Sentinel-2画像をCDSEカタログで検索する
-    """
-    west, south, east, north = BBOX
-    footprint = f"POLYGON(({west} {south},{east} {south},{east} {north},{west} {north},{west} {south}))"
-
-    params = {
-        "$filter": (
-            f"Collection/Name eq '{COLLECTION}' "
-            f"and OData.CSC.Intersects(area=geography'SRID=4326;{footprint}') "
-            f"and ContentDate/Start gt {start_date}T00:00:00.000Z "
-            f"and ContentDate/Start lt {end_date}T23:59:59.000Z "
-            f"and Attributes/OData.CSC.DoubleAttribute/any(att:att/Name eq 'cloudCover' and att/OData.CSC.DoubleAttribute/Value lt {max_cloud}) "
-            f"and Attributes/OData.CSC.StringAttribute/any(att:att/Name eq 'productType' and att/OData.CSC.StringAttribute/Value eq 'S2MSI2A')"
-        ),
-        "$orderby": "ContentDate/Start asc",
-        "$top": 50,
-        "$expand": "Attributes",
-    }
-
-    headers = {"Authorization": f"Bearer {token}"}
-    resp = requests.get(CDSE_SEARCH_URL, params=params, headers=headers, timeout=60)
-    resp.raise_for_status()
-
-    products = resp.json().get("value", [])
-    print(f"  🔍 {start_date} ~ {end_date}: {len(products)}件ヒット")
-    return products
-
-
-def download_thumbnail(product_id: str, token: str, save_path: Path) -> bool:
+    LON + BBOX_HALFdef download_thumbnail(product_id: str, token: str, save_path: Path) -> bool:
     """サムネイル画像をダウンロードする"""
-    url = f"https://catalogue.dataspace.copernicus.eu/odata/v1/Products({product_id})/Nodes"
-    headers = {"Authorization": f"Bearer {token}"}
-
     try:
-        resp = requests.get(url, headers=headers, timeout=30)
-        resp.raise_for_status()
-        nodes = resp.json().get("value", [])
-
-        ql_node = None
-        for node in nodes:
-            name = node.get("Name", "").upper()
-            if "QUICKLOOK" in name or name.endswith(".JPG") or name.endswith(".PNG"):
-                ql_node = node
-                break
-
-        if not ql_node:
-            # サムネイルAPIを直接試す
-            thumb_url = f"https://catalogue.dataspace.copernicus.eu/odata/v1/Products({product_id})/Nodes(QUICKLOOK.jpg)/$value"
-            dl_resp = requests.get(thumb_url, headers=headers, timeout=60, stream=True)
-            if dl_resp.status_code == 200:
-                with open(save_path, "wb") as f:
-                    for chunk in dl_resp.iter_content(chunk_size=8192):
-                        f.write(chunk)
-                print(f"    ✅ ダウンロード完了: {save_path.name}")
-                return True
-            print(f"    ⚠️ QuickLookが見つかりません")
-            return False
-
-        dl_url = f"https://catalogue.dataspace.copernicus.eu/odata/v1/Products({product_id})/Nodes({ql_node['Name']})/$value"
-        dl_resp = requests.get(dl_url, headers=headers, timeout=120, stream=True)
-        dl_resp.raise_for_status()
-
-        with open(save_path, "wb") as f:
-            for chunk in dl_resp.iter_content(chunk_size=8192):
-                f.write(chunk)
-
-        print(f"    ✅ ダウンロード完了: {save_path.name} ({save_path.stat().st_size // 1024}KB)")
-        return True
+        # Copernicus Browser のサムネイルURL
+        thumb_url = f"https://catalogue.dataspace.copernicus.eu/odata/v1/Products({product_id})/Nodes(GRANULE)/Nodes/*/Nodes(QUICKLOOK.jpg)/$value"
+        
+        # 直接ダウンロードURLを試す
+        direct_urls = [
+            f"https://catalogue.dataspace.copernicus.eu/odata/v1/Products({product_id})/Nodes(QUICKLOOK.jpg)/$value",
+            f"https://catalogue.dataspace.copernicus.eu/odata/v1/Products({product_id})/Nodes(preview.jpg)/$value",
+            f"https://catalogue.dataspace.copernicus.eu/odata/v1/Products({product_id})/Nodes(PREVIEW.JPG)/$value",
+        ]
+        
+        headers = {"Authorization": f"Bearer {token}"}
+        
+        for url in direct_urls:
+            try:
+                resp = requests.get(url, headers=headers, timeout=60, stream=True)
+                if resp.status_code == 200:
+                    with open(save_path, "wb") as f:
+                        for chunk in resp.iter_content(chunk_size=8192):
+                            f.write(chunk)
+                    size = save_path.stat().st_size
+                    if size > 1000:
+                        print(f"    ✅ ダウンロード完了: {save_path.name} ({size // 1024}KB)")
+                        return True
+            except Exception:
+                continue
+        
+        print(f"    ⚠️ QuickLookが見つかりません")
+        return False
 
     except Exception as e:
         print(f"    ❌ ダウンロード失敗: {e}")
