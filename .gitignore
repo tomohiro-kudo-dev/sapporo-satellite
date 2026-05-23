@@ -14,8 +14,7 @@ out/
 *.log
 
 # Data (衛星画像は容量大のためgit管理外)
-backend/data/images/*.png
-backend/data/images/*.jpg
+
 # メタデータはコミットしてもOK (サイズ小)
 # backend/data/metadata/ は管理する
 
