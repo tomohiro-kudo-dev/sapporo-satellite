@@ -1,7 +1,3 @@
-"""
-衛星画像タイルプロキシ
-CopernicusのWMTSタイルをバックエンド経由で配信する
-"""
 from fastapi import APIRouter, Response
 import requests
 
