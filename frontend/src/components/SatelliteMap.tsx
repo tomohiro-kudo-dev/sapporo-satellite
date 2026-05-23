@@ -68,17 +68,19 @@ export default function SatelliteMap({ selectedImage, opacity }: SatelliteMapPro
       const fromTime = `${date}T00:00:00.000Z`;
       const toTime = `${date}T23:59:59.999Z`;
       
-      const wmsUrl = "https://sh.dataspace.copernicus.eu/ogc/wms/a91f72b5-f393-4320-bc0f-990129bd9e63";
-      
-      const wmsLayer = L.tileLayer.wms(wmsUrl, {
-        layers: "1_TRUE_COLOR",
-        format: "image/jpeg",
-        transparent: false,
-        version: "1.3.0",
-        time: `${fromTime}/${toTime}`,
-        opacity: opacity,
-        attribution: "Copernicus Sentinel-2 © ESA",
-      } as any);
+      const wmsUrl = "https://services.sentinel-hub.com/ogc/wms/";
+
+      const wmsLayer = L.tileLayer.wms(
+        `https://catalogue.dataspace.copernicus.eu/ogc/wms?SERVICE=WMS&REQUEST=GetMap&VERSION=1.3.0&LAYERS=TRUE-COLOR-S2L2A&STYLES=&FORMAT=image/jpeg&TIME=${date}&MAXCC=100`,
+        {
+          layers: "TRUE-COLOR-S2L2A",
+          format: "image/jpeg",
+          transparent: false,
+          version: "1.3.0",
+          opacity: opacity,
+          attribution: "Copernicus Sentinel-2 © ESA",
+        } as any
+      );
 
       wmsLayer.addTo(leafletMapRef.current);
       overlayRef.current = wmsLayer;
