@@ -1,0 +1,23 @@
+{
+  "date": "2021-12-11",
+  "year": 2021,
+  "month": 12,
+  "product_id": "MOCK_20211211",
+  "product_name": "S2A_MSIL2A_20211211_MOCK",
+  "cloud_coverage": 32.7,
+  "downloaded": true,
+  "is_mock": true,
+  "image_path": "/static/images/2021-12-11.png",
+  "file_size_kb": 9,
+  "bbox": {
+    "west": 141.3208,
+    "south": 43.0387,
+    "east": 141.3808,
+    "north": 43.0987
+  },
+  "center": {
+    "lat": 43.0687,
+    "lon": 141.3508
+  },
+  "fetched_at": "2026-05-23T11:15:51.861994Z"
+}
