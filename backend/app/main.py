@@ -15,16 +15,14 @@ from app.api import images
 async def lifespan(app: FastAPI):
     os.makedirs("data/images", exist_ok=True)
     os.makedirs("data/metadata", exist_ok=True)
-    # メタデータが空なら自動生成
-    metadata_dir = Path("data/metadata")
-    if not list(metadata_dir.glob("*.json")):
-        import subprocess
-        cdse_user = os.getenv("CDSE_USER")
-        cdse_password = os.getenv("CDSE_PASSWORD")
-        if cdse_user and cdse_password:
-            subprocess.run(["python", "fetch_images.py"], cwd="/opt/render/project/src/backend")
-        else:
-            subprocess.run(["python", "generate_mock_data.py"], cwd="/opt/render/project/src/backend")
+    # 毎回起動時にデータを生成
+    import subprocess
+    cdse_user = os.getenv("CDSE_USER")
+    cdse_password = os.getenv("CDSE_PASSWORD")
+    if cdse_user and cdse_password:
+        subprocess.Popen(["python", "fetch_images.py"], cwd="/opt/render/project/src/backend")
+    else:
+        subprocess.Popen(["python", "generate_mock_data.py"], cwd="/opt/render/project/src/backend")
     yield
 
 
