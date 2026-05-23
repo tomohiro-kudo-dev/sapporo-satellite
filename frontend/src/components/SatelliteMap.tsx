@@ -1,5 +1,4 @@
 "use client";
-import { useEffect, useRef } from "react";
 import { ImageMetadata } from "@/lib/api";
 
 interface SatelliteMapProps {
@@ -7,83 +6,26 @@ interface SatelliteMapProps {
   opacity: number;
 }
 
-const SAPPORO = { lat: 43.0687, lon: 141.3508 };
-const INITIAL_ZOOM = 14;
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
-
 export default function SatelliteMap({ selectedImage, opacity }: SatelliteMapProps) {
-  const mapRef = useRef<HTMLDivElement>(null);
-  const leafletMapRef = useRef<any>(null);
-  const overlayRef = useRef<any>(null);
+  const date = selectedImage?.date ?? "2024-06-15";
+  const fromTime = `${date}T00:00:00.000Z`;
+  const toTime = `${date}T23:59:59.999Z`;
 
-  useEffect(() => {
-    if (!mapRef.current || leafletMapRef.current) return;
-
-    import("leaflet").then((L) => {
-      const map = L.map(mapRef.current!, {
-        center: [SAPPORO.lat, SAPPORO.lon],
-        zoom: INITIAL_ZOOM,
-      });
-
-      L.tileLayer(
-        "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
-        {
-          attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OSM</a> &copy; <a href="https://carto.com">CARTO</a>',
-          subdomains: "abcd",
-          maxZoom: 20,
-        }
-      ).addTo(map);
-
-      L.circleMarker([SAPPORO.lat, SAPPORO.lon], {
-        radius: 8,
-        fillColor: "#00ff88",
-        color: "#00ff88",
-        weight: 2,
-        opacity: 0.9,
-        fillOpacity: 0.4,
-      }).addTo(map).bindTooltip("🚄 北海道新幹線 札幌駅工事エリア");
-
-      leafletMapRef.current = map;
-    });
-
-    return () => {
-      if (leafletMapRef.current) {
-        leafletMapRef.current.remove();
-        leafletMapRef.current = null;
-      }
-    };
-  }, []);
-
-  useEffect(() => {
-    if (!leafletMapRef.current || !selectedImage) return;
-
-    import("leaflet").then((L) => {
-      if (overlayRef.current) {
-        overlayRef.current.remove();
-        overlayRef.current = null;
-      }
-
-      const date = selectedImage.date;
-      const wmtsUrl = `${API_BASE}/api/tiles/{z}/{x}/{y}?date=${date}`;
-
-      const layer = L.tileLayer(wmtsUrl, {
-        opacity: opacity,
-        attribution: "Copernicus Sentinel-2 © ESA",
-        tileSize: 256,
-      });
-
-      layer.addTo(leafletMapRef.current);
-      overlayRef.current = layer;
-    });
-  }, [selectedImage]);
-
-  useEffect(() => {
-    if (overlayRef.current) {
-      overlayRef.current.setOpacity(opacity);
-    }
-  }, [opacity]);
+  const src = `https://browser.dataspace.copernicus.eu/?zoom=14&lat=43.0687&lng=141.3508&themeId=DEFAULT-THEME&visualizationUrl=https%3A%2F%2Fsh.dataspace.copernicus.eu%2Fogc%2Fwms%2Fa91f72b5-f393-4320-bc0f-990129bd9e63&evalscript=&datasetId=S2L2A&fromTime=${encodeURIComponent(fromTime)}&toTime=${encodeURIComponent(toTime)}&layerId=1_TRUE_COLOR`;
 
   return (
-    <div ref={mapRef} className="w-full h-full" style={{ background: "#0a0f14" }} />
+    <div style={{ width: "100%", height: "100%", position: "relative" }}>
+      <iframe
+        src={src}
+        style={{
+          width: "100%",
+          height: "100%",
+          border: "none",
+          opacity: opacity,
+        }}
+        allowFullScreen
+        title="Copernicus Sentinel-2 衛星画像"
+      />
+    </div>
   );
 }
