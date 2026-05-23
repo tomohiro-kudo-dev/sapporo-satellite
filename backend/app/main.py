@@ -5,6 +5,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from contextlib import asynccontextmanager
+from pathlib import Path
 import os
 
 from app.api import images
@@ -12,9 +13,13 @@ from app.api import images
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # 起動時: dataディレクトリを作成
     os.makedirs("data/images", exist_ok=True)
     os.makedirs("data/metadata", exist_ok=True)
+    # メタデータが空なら自動生成
+    metadata_dir = Path("data/metadata")
+    if not list(metadata_dir.glob("*.json")):
+        import subprocess
+        subprocess.run(["python", "generate_mock_data.py"], cwd="/opt/render/project/src/backend")
     yield
 
 
