@@ -74,7 +74,7 @@ export default function ControlPanel({
       {/* データソース */}
       <div className="data-source">
         <span>データ: Copernicus Sentinel-2</span>
-        <span>© ESA 2024</span>
+        <span>© ESA {new Date().getFullYear()}</span>
       </div>
     </div>
   );
