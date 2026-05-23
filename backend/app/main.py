@@ -7,32 +7,30 @@ from fastapi.staticfiles import StaticFiles
 from contextlib import asynccontextmanager
 from pathlib import Path
 import os
+import subprocess
 
-from app.api import images
-from app.api import tiles
+from app.api import images, tiles
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     os.makedirs("data/images", exist_ok=True)
     os.makedirs("data/metadata", exist_ok=True)
-    import subprocess
-    cdse_user = os.getenv("CDSE_USER")
-    cdse_password = os.getenv("CDSE_PASSWORD")
-    if cdse_user and cdse_password:
-        subprocess.Popen(["python", "fetch_images.py", "--max-cloud", "20"], cwd="/opt/render/project/src/backend")
-    else:
-        subprocess.run(["python", "generate_mock_data.py"], cwd="/opt/render/project/src/backend")
+    metadata_dir = Path("data/metadata")
+    if not list(metadata_dir.glob("*.json")):
+        subprocess.run(
+            ["python", "generate_mock_data.py"],
+            cwd="/opt/render/project/src/backend"
+        )
     yield
+
 
 app = FastAPI(
     title="札幌駅新幹線工事 変化ビューア API",
-    description="Sentinel-2衛星画像を時系列で取得・提供するAPI",
     version="1.0.0",
     lifespan=lifespan,
 )
 
-# CORS設定 (フロントエンドからのアクセスを許可)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -41,22 +39,16 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# 静的ファイル (衛星画像PNG) を配信
 os.makedirs("data", exist_ok=True)
 app.mount("/static", StaticFiles(directory="data"), name="static")
 
-# APIルーターを登録
 app.include_router(images.router, prefix="/api/images", tags=["images"])
 app.include_router(tiles.router, prefix="/api/tiles", tags=["tiles"])
 
 
 @app.get("/")
 def root():
-    return {
-        "message": "札幌駅新幹線工事 変化ビューア API",
-        "docs": "/docs",
-        "version": "1.0.0",
-    }
+    return {"message": "札幌駅新幹線工事 変化ビューア API", "version": "1.0.0"}
 
 
 @app.get("/health")
