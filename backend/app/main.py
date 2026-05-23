@@ -38,6 +38,7 @@ app.add_middleware(
 )
 
 # 静的ファイル (衛星画像PNG) を配信
+os.makedirs("data", exist_ok=True)
 app.mount("/static", StaticFiles(directory="data"), name="static")
 
 # APIルーターを登録
