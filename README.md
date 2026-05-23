@@ -313,3 +313,4 @@ MIT License
 衛星データ: Copernicus Sentinel-2 (© ESA, 利用規約: https://sentinel.esa.int/web/sentinel/terms-conditions)
 
 地図データ: OpenStreetMap Contributors (© ODbL), CartoDB
+# sapporo-satellite
