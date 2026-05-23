@@ -13,7 +13,9 @@ const INITIAL_ZOOM = 14;
 export default function SatelliteMap({ selectedImage, opacity }: SatelliteMapProps) {
   const mapRef = useRef<HTMLDivElement>(null);
   const leafletMapRef = useRef<any>(null);
+  const overlayRef = useRef<any>(null);
 
+  // マップ初期化
   useEffect(() => {
     if (!mapRef.current || leafletMapRef.current) return;
 
@@ -23,6 +25,7 @@ export default function SatelliteMap({ selectedImage, opacity }: SatelliteMapPro
         zoom: INITIAL_ZOOM,
       });
 
+      // ダークベースマップ
       L.tileLayer(
         "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
         {
@@ -32,6 +35,7 @@ export default function SatelliteMap({ selectedImage, opacity }: SatelliteMapPro
         }
       ).addTo(map);
 
+      // 札幌駅マーカー
       L.circleMarker([SAPPORO.lat, SAPPORO.lon], {
         radius: 8,
         fillColor: "#00ff88",
@@ -52,40 +56,40 @@ export default function SatelliteMap({ selectedImage, opacity }: SatelliteMapPro
     };
   }, []);
 
-  const openCopernicus = () => {
-    if (!selectedImage) return;
-    const date = selectedImage.date;
-    const fromTime = `${date}T00:00:00.000Z`;
-    const toTime = `${date}T23:59:59.999Z`;
-    const url = `https://browser.dataspace.copernicus.eu/?zoom=14&lat=43.0687&lng=141.3508&themeId=DEFAULT-THEME&visualizationUrl=https%3A%2F%2Fsh.dataspace.copernicus.eu%2Fogc%2Fwms%2Fa91f72b5-f393-4320-bc0f-990129bd9e63&datasetId=S2L2A&fromTime=${encodeURIComponent(fromTime)}&toTime=${encodeURIComponent(toTime)}&layerId=1_TRUE_COLOR`;
-    window.open(url, "_blank");
-  };
+  // 衛星画像オーバーレイ更新
+  useEffect(() => {
+    if (!leafletMapRef.current || !selectedImage) return;
+
+    import("leaflet").then((L) => {
+      if (overlayRef.current) {
+        overlayRef.current.remove();
+        overlayRef.current = null;
+      }
+
+      const date = selectedImage.date;
+      const apiBase = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+      const tileUrl = `${apiBase}/api/tiles/{z}/{x}/{y}?date=${date}`;
+
+      const layer = L.tileLayer(tileUrl, {
+        opacity: opacity,
+        attribution: "Copernicus Sentinel-2 © ESA",
+        tileSize: 256,
+        maxZoom: 18,
+      });
+
+      layer.addTo(leafletMapRef.current);
+      overlayRef.current = layer;
+    });
+  }, [selectedImage]);
+
+  // 透明度更新
+  useEffect(() => {
+    if (overlayRef.current) {
+      overlayRef.current.setOpacity(opacity);
+    }
+  }, [opacity]);
 
   return (
-    <div style={{ width: "100%", height: "100%", position: "relative" }}>
-      <div ref={mapRef} className="w-full h-full" style={{ background: "#0a0f14" }} />
-      {selectedImage && (
-        <button
-          onClick={openCopernicus}
-          style={{
-            position: "absolute",
-            bottom: "16px",
-            left: "50%",
-            transform: "translateX(-50%)",
-            background: "rgba(0, 229, 160, 0.9)",
-            color: "#000",
-            border: "none",
-            borderRadius: "8px",
-            padding: "10px 20px",
-            fontSize: "13px",
-            fontWeight: "600",
-            cursor: "pointer",
-            zIndex: 1000,
-          }}
-        >
-          🛰️ {selectedImage.date} の衛星画像を見る
-        </button>
-      )}
-    </div>
+    <div ref={mapRef} className="w-full h-full" style={{ background: "#0a0f14" }} />
   );
 }
