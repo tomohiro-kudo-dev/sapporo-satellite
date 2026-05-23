@@ -20,14 +20,14 @@ jobs:
         run: |
           cd backend
           pip install -r requirements.txt
-
+        
       - name: 衛星画像取得
         env:
           CDSE_USER: ${{ secrets.CDSE_USER }}
           CDSE_PASSWORD: ${{ secrets.CDSE_PASSWORD }}
         run: |
           cd backend
-          python fetch_images.py --month $(date +%Y-%m)
+          python fetch_images.py --start 2020-01-01 --max-cloud 80
 
       - name: GitHubにコミット
         run: |
