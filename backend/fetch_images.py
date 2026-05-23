@@ -35,7 +35,7 @@ BBOX = (
     LAT - BBOX_HALF,  # south
     LON + BBOX_HALFdef
 )
-  download_thumbnail(product_id: str, token: str, save_path: Path) -> bool:
+def download_thumbnail(product_id: str, token: str, save_path: Path) -> bool:
     """サムネイル画像をダウンロードする"""
     try:
         # Copernicus Browser のサムネイルURL
