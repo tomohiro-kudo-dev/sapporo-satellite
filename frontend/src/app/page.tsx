@@ -107,7 +107,7 @@ export default function HomePage() {
 
       {/* フッター */}
       <footer className="app-footer">
-        <span>© 2024 Sapporo Satellite Viewer</span>
+        <span>© 2026 Sapporo Satellite Viewer</span>
         <span>Copernicus Sentinel-2 · ESA</span>
         <a
           href="https://github.com"
