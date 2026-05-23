@@ -105,7 +105,6 @@ def search_sentinel2(
 
 
 def download_thumbnail(product_id: str, token: str, save_path: Path) -> bool:
-    def download_thumbnail(product_id: str, token: str, save_path: Path) -> bool:
     """サムネイル画像をダウンロードする"""
     url = f"https://catalogue.dataspace.copernicus.eu/odata/v1/Assets?$filter=ParentId eq {product_id}&$top=50"
     headers = {"Authorization": f"Bearer {token}"}
