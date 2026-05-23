@@ -33,7 +33,8 @@ BBOX_HALF = 0.03     # 表示範囲 (約3km)
 BBOX = (
     LON - BBOX_HALF,  # west
     LAT - BBOX_HALF,  # south
-    LON + BBOX_HALFdef
+    LON + BBOX_HALF,  # east
+    LAT + BBOX_HALF,  # north
 )
 
 def download_thumbnail(product_id: str, token: str, save_path: Path) -> bool:
