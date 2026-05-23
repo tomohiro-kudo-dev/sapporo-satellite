@@ -19,11 +19,10 @@ async def lifespan(app: FastAPI):
     cdse_user = os.getenv("CDSE_USER")
     cdse_password = os.getenv("CDSE_PASSWORD")
     if cdse_user and cdse_password:
-        subprocess.Popen(["python", "fetch_images.py"], cwd="/opt/render/project/src/backend")
+        subprocess.Popen(["python", "fetch_images.py", "--max-cloud", "20"], cwd="/opt/render/project/src/backend")
     else:
         subprocess.run(["python", "generate_mock_data.py"], cwd="/opt/render/project/src/backend")
     yield
-
 
 app = FastAPI(
     title="札幌駅新幹線工事 変化ビューア API",
