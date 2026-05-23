@@ -55,7 +55,7 @@ export default function SatelliteMap({ selectedImage, opacity }: SatelliteMapPro
     };
   }, []);
 
-  useEffect(() => {
+ useEffect(() => {
     if (!leafletMapRef.current || !selectedImage) return;
 
     import("leaflet").then((L) => {
@@ -65,22 +65,19 @@ export default function SatelliteMap({ selectedImage, opacity }: SatelliteMapPro
       }
 
       const date = selectedImage.date;
-      const fromTime = `${date}T00:00:00.000Z`;
-      const toTime = `${date}T23:59:59.999Z`;
-      
-      const wmsUrl = "https://services.sentinel-hub.com/ogc/wms/";
 
-      const wmsLayer = L.tileLayer.wms(
-        `https://catalogue.dataspace.copernicus.eu/ogc/wms?SERVICE=WMS&REQUEST=GetMap&VERSION=1.3.0&LAYERS=TRUE-COLOR-S2L2A&STYLES=&FORMAT=image/jpeg&TIME=${date}&MAXCC=100`,
-        {
-          layers: "TRUE-COLOR-S2L2A",
-          format: "image/jpeg",
-          transparent: false,
-          version: "1.3.0",
-          opacity: opacity,
-          attribution: "Copernicus Sentinel-2 © ESA",
-        } as any
-      );
+      const wmtsUrl = `https://catalogue.dataspace.copernicus.eu/ogc/wmts/SENTINEL-2?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=TRUE-COLOR-S2L2A&STYLE=&FORMAT=image/jpeg&TILEMATRIXSET=PopularWebMercator&TIME=${date}&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}`;
+
+      const layer = L.tileLayer(wmtsUrl, {
+        opacity: opacity,
+        attribution: "Copernicus Sentinel-2 © ESA",
+        tileSize: 256,
+      });
+
+      layer.addTo(leafletMapRef.current);
+      overlayRef.current = layer;
+    });
+  }, [selectedImage]);
 
       wmsLayer.addTo(leafletMapRef.current);
       overlayRef.current = wmsLayer;
