@@ -28,7 +28,7 @@ jobs:
         run: |
           cd backend
           python fetch_images.py --month $(date +%Y-%m)
-
+          
         - name: GitHubにコミット
         run: |
           git config user.name "github-actions"
