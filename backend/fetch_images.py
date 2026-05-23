@@ -35,6 +35,7 @@ BBOX = (
     LAT - BBOX_HALF,  # south
     LON + BBOX_HALFdef
 )
+
 def download_thumbnail(product_id: str, token: str, save_path: Path) -> bool:
     """サムネイル画像をダウンロードする"""
     try:
