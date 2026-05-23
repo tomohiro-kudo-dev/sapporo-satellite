@@ -1,4 +1,4 @@
-# 🛰️ 札幌駅新幹線工事 変化ビューア
+# 札幌駅新幹線工事 変化ビューア
 
 北海道新幹線延伸工事エリアをSentinel-2衛星画像で時系列比較するWebアプリ。
 
@@ -6,16 +6,16 @@
 
 ## 概要
 
-- **衛星データ**: Copernicus Sentinel-2 (無料・欧州宇宙機関)
-- **対象エリア**: 札幌駅周辺・創成川エリア (北海道新幹線延伸工事箇所)
-- **期間**: 2020年〜現在 (月1枚取得)
-- **雲量フィルター**: 20%以下優先
+* 衛星データ: Copernicus Sentinel-2 (無料・欧州宇宙機関)
+* 対象エリア: 札幌駅周辺・創成川エリア (北海道新幹線延伸工事箇所)
+* 期間: 2020年〜現在 (月1枚取得)
+* 雲量フィルター: 20%以下優先
 
 ---
 
 ## システム構成
 
-```
+```text
 sapporo-satellite/
 ├── backend/               # FastAPI バックエンド
 │   ├── app/
@@ -45,13 +45,13 @@ sapporo-satellite/
 
 ---
 
-## ⚡ クイックスタート (ローカル)
+## クイックスタート (ローカル)
 
 ### 前提条件
 
-- Python 3.11以上
-- Node.js 20以上
-- Git
+* Python 3.11以上
+* Node.js 20以上
+* Git
 
 ---
 
@@ -86,7 +86,7 @@ python generate_mock_data.py
 uvicorn app.main:app --reload --port 8000
 ```
 
-ブラウザで http://localhost:8000/docs を開くとAPIドキュメントが見えます。
+ブラウザで [http://localhost:8000/docs](http://localhost:8000/docs) を開くとAPIドキュメントが見えます。
 
 ---
 
@@ -107,7 +107,7 @@ npm install
 npm run dev
 ```
 
-ブラウザで http://localhost:3000 を開いてください。
+ブラウザで [http://localhost:3000](http://localhost:3000) を開いてください。
 
 ---
 
@@ -117,7 +117,7 @@ npm run dev
 
 #### 4-1. Copernicusアカウント作成 (無料)
 
-1. https://dataspace.copernicus.eu/ にアクセス
+1. [https://dataspace.copernicus.eu/](https://dataspace.copernicus.eu/) にアクセス
 2. 「Register」からアカウント作成
 3. メール確認を完了する
 
@@ -147,28 +147,28 @@ python fetch_images.py --max-cloud 10
 
 ---
 
-## 🌐 API リファレンス
+## API リファレンス
 
-| メソッド | エンドポイント | 説明 |
-|---------|--------------|------|
-| GET | `/api/images` | 画像一覧 (フィルタ可) |
-| GET | `/api/images/latest` | 最新画像 |
-| GET | `/api/images/{date}` | 指定日の画像 |
-| GET | `/api/images/{date}/file` | 画像ファイル直接取得 |
+| メソッド | エンドポイント                   | 説明           |
+| ---- | ------------------------- | ------------ |
+| GET  | `/api/images`             | 画像一覧 (フィルタ可) |
+| GET  | `/api/images/latest`      | 最新画像         |
+| GET  | `/api/images/{date}`      | 指定日の画像       |
+| GET  | `/api/images/{date}/file` | 画像ファイル直接取得   |
 
 ### クエリパラメータ
 
 `GET /api/images?year=2024&max_cloud=15`
 
-| パラメータ | 型 | 説明 |
-|-----------|---|------|
-| year | int | 年でフィルタ |
-| month | int | 月でフィルタ |
+| パラメータ     | 型     | 説明      |
+| --------- | ----- | ------- |
+| year      | int   | 年でフィルタ  |
+| month     | int   | 月でフィルタ  |
 | max_cloud | float | 雲量上限(%) |
 
 ---
 
-## 🚀 Renderへのデプロイ
+## Renderへのデプロイ
 
 ### 1. GitHubリポジトリを作成
 
@@ -185,7 +185,7 @@ git push -u origin main
 
 ### 2. RenderでBlueprint設定
 
-1. https://render.com にログイン (GitHubアカウントで)
+1. [https://render.com](https://render.com) にログイン (GitHubアカウントで)
 2. 「New +」→「Blueprint」
 3. GitHubリポジトリを選択
 4. `render.yaml` が自動検出される
@@ -195,36 +195,38 @@ git push -u origin main
 
 Renderダッシュボードの `sapporo-satellite-api` サービスで:
 
-| キー | 値 |
-|-----|---|
-| CDSE_USER | Copernicusのメールアドレス |
-| CDSE_PASSWORD | Copernicusのパスワード |
+| キー            | 値                  |
+| ------------- | ------------------ |
+| CDSE_USER     | Copernicusのメールアドレス |
+| CDSE_PASSWORD | Copernicusのパスワード   |
 
 ### 4. デプロイ後の確認
 
-- フロントエンド: `https://sapporo-satellite.onrender.com`
-- バックエンドAPI: `https://sapporo-satellite-api.onrender.com/docs`
+* フロントエンド: `https://sapporo-satellite.onrender.com`
+* バックエンドAPI: `https://sapporo-satellite-api.onrender.com/docs`
 
-> ⚠️ Renderの無料プランはアクセスがないとスリープします。初回アクセスは30秒ほどかかります。
+> Renderの無料プランはアクセスがないとスリープします。初回アクセスは30秒ほどかかります。
 
 ---
 
-## 🛠️ よくあるエラーと対処法
+## よくあるエラーと対処法
 
 ### バックエンドが起動しない
 
-```
+```text
 ModuleNotFoundError: No module named 'fastapi'
 ```
+
 → 仮想環境が有効になっていません。`source venv/bin/activate` を実行してください。
 
 ---
 
 ### 地図が表示されない (フロントエンド)
 
-```
+```text
 Error: Leaflet is not defined
 ```
+
 → Leafletは自動的にSSR無効化されています。ブラウザのキャッシュをクリアして再試行してください。
 
 ---
@@ -240,69 +242,81 @@ Error: Leaflet is not defined
 
 ### Copernicus 認証エラー
 
-```
+```text
 ❌ 認証失敗: 401 Unauthorized
 ```
+
 → `.env` のメールアドレスとパスワードを確認。アカウント登録後、メール確認が完了しているか確認。
 
 ---
 
 ### 衛星画像が見つからない (雲量エラー)
 
-```
+```text
 ⚠️ 2024-02: 雲量20%以下の画像なし
 ```
+
 → 冬季は雲が多く画像が取得できないことがあります。`--max-cloud 40` で上限を上げて試してください。
 
 ---
 
-## 🔭 次にやるべき改善案 TOP10
+## 次にやるべき改善案 TOP10
 
 ### 技術的改善
 
-1. **🤖 AIによる工事変化検知**
-   - Python + OpenCV で差分検出
-   - PyTorch で変化領域をハイライト
-   - 工事進捗率を自動計算
+1. AIによる工事変化検知
 
-2. **⏱️ タイムラプス動画生成**
-   - FFmpegで画像列をMP4に変換
-   - ブラウザ内プレビュー
-   - ダウンロードボタン
+   * Python + OpenCV で差分検出
+   * PyTorch で変化領域をハイライト
+   * 工事進捗率を自動計算
 
-3. **🔍 衛星画像の並列比較 (スプリットビュー)**
-   - 左右分割で2枚同時表示
-   - ドラッグで比較境界を移動
+2. タイムラプス動画生成
 
-4. **🏢 建物増減検知 (NDBI)**
-   - 正規化建物指数を計算
-   - 建設・解体エリアを色分け
+   * FFmpegで画像列をMP4に変換
+   * ブラウザ内プレビュー
+   * ダウンロードボタン
 
-5. **🌍 対象エリア拡張**
-   - 北海道全域の工事箇所に対応
-   - 座標検索ボックスを追加
+3. 衛星画像の並列比較 (スプリットビュー)
+
+   * 左右分割で2枚同時表示
+   * ドラッグで比較境界を移動
+
+4. 建物増減検知 (NDBI)
+
+   * 正規化建物指数を計算
+   * 建設・解体エリアを色分け
+
+5. 対象エリア拡張
+
+   * 北海道全域の工事箇所に対応
+   * 座標検索ボックスを追加
 
 ### UX改善
 
-6. **📊 工事進捗ダッシュボード**
-   - 変化ピクセル数のグラフ表示
-   - 月次レポートPDF出力
+6. 工事進捗ダッシュボード
 
-7. **🔔 プッシュ通知**
-   - 新画像取得時にメール/LINE通知
-   - GitHub Actions でスケジュール取得
+   * 変化ピクセル数のグラフ表示
+   * 月次レポートPDF出力
 
-8. **💾 データベース導入 (SQLite → PostgreSQL)**
-   - 高速検索
-   - 統計クエリ
+7. プッシュ通知
 
-9. **🗺️ 複数バンド表示**
-   - RGB / 近赤外 / NDVI 切替
-   - 植生・水域の可視化
+   * 新画像取得時にメール/LINE通知
+   * GitHub Actions でスケジュール取得
 
-10. **📱 PWA (Progressive Web App) 対応**
-    - ホーム画面に追加可能
-    - オフライン表示 (最終取得画像をキャッシュ)
+8. データベース導入 (SQLite → PostgreSQL)
+
+   * 高速検索
+   * 統計クエリ
+
+9. 複数バンド表示
+
+   * RGB / 近赤外 / NDVI 切替
+   * 植生・水域の可視化
+
+10. PWA (Progressive Web App) 対応
+
+    * ホーム画面に追加可能
+    * オフライン表示 (最終取得画像をキャッシュ)
 
 ---
 
@@ -310,7 +324,8 @@ Error: Leaflet is not defined
 
 MIT License
 
-衛星データ: Copernicus Sentinel-2 (© ESA, 利用規約: https://sentinel.esa.int/web/sentinel/terms-conditions)
+衛星データ: Copernicus Sentinel-2 (© ESA, 利用規約: [https://sentinel.esa.int/web/sentinel/terms-conditions](https://sentinel.esa.int/web/sentinel/terms-conditions))
 
 地図データ: OpenStreetMap Contributors (© ODbL), CartoDB
+
 # sapporo-satellite
