@@ -1,0 +1,38 @@
+name: 衛星画像自動取得
+
+on:
+  schedule:
+    - cron: '0 1 1 * *'  # 毎月1日 午前1時(UTC)
+  workflow_dispatch:      # 手動実行も可能
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Python設定
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: ライブラリインストール
+        run: |
+          cd backend
+          pip install -r requirements.txt
+
+      - name: 衛星画像取得
+        env:
+          CDSE_USER: ${{ secrets.CDSE_USER }}
+          CDSE_PASSWORD: ${{ secrets.CDSE_PASSWORD }}
+        run: |
+          cd backend
+          python fetch_images.py --month $(date +%Y-%m)
+
+      - name: GitHubにコミット
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add -f backend/data/
+          git diff --staged --quiet || git commit -m "Auto: $(date +%Y-%m)の衛星画像を追加"
+          git push
