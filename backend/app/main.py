@@ -9,6 +9,7 @@ from pathlib import Path
 import os
 
 from app.api import images
+from app.api import tiles
 
 
 @asynccontextmanager
@@ -46,6 +47,7 @@ app.mount("/static", StaticFiles(directory="data"), name="static")
 
 # APIルーターを登録
 app.include_router(images.router, prefix="/api/images", tags=["images"])
+app.include_router(tiles.router, prefix="/api/tiles", tags=["tiles"])
 
 
 @app.get("/")
