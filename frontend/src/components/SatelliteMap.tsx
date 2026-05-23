@@ -67,8 +67,8 @@ export default function SatelliteMap({ selectedImage, opacity }: SatelliteMapPro
       const date = selectedImage.date;
       const fromTime = `${date}T00:00:00.000Z`;
       const toTime = `${date}T23:59:59.999Z`;
-
-      const wmsUrl = "https://catalogue.dataspace.copernicus.eu/resto/api/collections/Sentinel2/search.json";
+      
+      const wmsUrl = "https://sh.dataspace.copernicus.eu/ogc/wms/a91f72b5-f393-4320-bc0f-990129bd9e63";
       
       const wmsLayer = L.tileLayer.wms(wmsUrl, {
         layers: "1_TRUE_COLOR",
