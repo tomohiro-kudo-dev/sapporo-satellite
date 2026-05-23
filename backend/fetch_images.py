@@ -29,6 +29,9 @@ load_dotenv()
 LAT = 43.0687        # 札幌駅 緯度
 LON = 141.3508       # 札幌駅 経度
 BBOX_HALF = 0.03     # 表示範囲 (約3km)
+MAX_CLOUD_COVERAGE = 20   # 雲量上限 (%)
+START_DATE = "2020-01-01" # 取得開始日
+COLLECTION = "SENTINEL-2"
 
 BBOX = (
     LON - BBOX_HALF,  # west
