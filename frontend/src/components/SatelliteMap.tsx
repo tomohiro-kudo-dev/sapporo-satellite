@@ -9,6 +9,7 @@ interface SatelliteMapProps {
 
 const SAPPORO = { lat: 43.0687, lon: 141.3508 };
 const INITIAL_ZOOM = 14;
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
 export default function SatelliteMap({ selectedImage, opacity }: SatelliteMapProps) {
   const mapRef = useRef<HTMLDivElement>(null);
@@ -63,7 +64,7 @@ export default function SatelliteMap({ selectedImage, opacity }: SatelliteMapPro
       }
 
       const date = selectedImage.date;
-      const wmtsUrl = `https://catalogue.dataspace.copernicus.eu/ogc/wmts/SENTINEL-2?SERVICE=WMTS&REQUEST=GetTile&VERSION=1.0.0&LAYER=TRUE-COLOR-S2L2A&STYLE=&FORMAT=image/jpeg&TILEMATRIXSET=PopularWebMercator&TIME=${date}&TILEMATRIX={z}&TILEROW={y}&TILECOL={x}`;
+      const wmtsUrl = `${API_BASE}/api/tiles/{z}/{x}/{y}?date=${date}`;
 
       const layer = L.tileLayer(wmtsUrl, {
         opacity: opacity,
