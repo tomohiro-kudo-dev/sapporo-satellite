@@ -32,6 +32,12 @@ BBOX_HALF = 0.03     # 表示範囲 (約3km)
 MAX_CLOUD_COVERAGE = 20   # 雲量上限 (%)
 START_DATE = "2020-01-01" # 取得開始日
 COLLECTION = "SENTINEL-2"
+IMAGES_DIR = Path("data/images")
+METADATA_DIR = Path("data/metadata")
+
+CDSE_TOKEN_URL = "https://identity.dataspace.copernicus.eu/auth/realms/CDSE/protocol/openid-connect/token"
+CDSE_SEARCH_URL = "https://catalogue.dataspace.copernicus.eu/odata/v1/Products"
+CDSE_DOWNLOAD_BASE = "https://download.dataspace.copernicus.eu/odata/v1/Products"
 
 BBOX = (
     LON - BBOX_HALF,  # west
