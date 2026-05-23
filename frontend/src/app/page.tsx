@@ -110,7 +110,7 @@ export default function HomePage() {
         <span>© 2026 Sapporo Satellite Viewer</span>
         <span>Copernicus Sentinel-2 · ESA</span>
         <a
-          href="https://github.com"
+          href="https://github.com/tomohiro-kudo-dev/sapporo-satellite"
           target="_blank"
           rel="noreferrer"
           className="footer-link"
