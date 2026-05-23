@@ -106,31 +106,35 @@ def search_sentinel2(
 
 def download_thumbnail(product_id: str, token: str, save_path: Path) -> bool:
     """サムネイル画像をダウンロードする"""
-    url = f"https://catalogue.dataspace.copernicus.eu/odata/v1/Assets?$filter=ParentId eq {product_id}&$top=50"
+    url = f"https://catalogue.dataspace.copernicus.eu/odata/v1/Products({product_id})/Nodes"
     headers = {"Authorization": f"Bearer {token}"}
 
     try:
         resp = requests.get(url, headers=headers, timeout=30)
         resp.raise_for_status()
-        assets = resp.json().get("value", [])
+        nodes = resp.json().get("value", [])
 
-        # QUICKLOOK アセットを探す
-        ql_asset = None
-        for asset in assets:
-            asset_type = asset.get("Type", "").upper()
-            if "QUICKLOOK" in asset_type:
-                ql_asset = asset
+        ql_node = None
+        for node in nodes:
+            name = node.get("Name", "").upper()
+            if "QUICKLOOK" in name or name.endswith(".JPG") or name.endswith(".PNG"):
+                ql_node = node
                 break
 
-        if not ql_asset:
-            print(f"    ⚠️ QuickLookアセットが見つかりません")
+        if not ql_node:
+            # サムネイルAPIを直接試す
+            thumb_url = f"https://catalogue.dataspace.copernicus.eu/odata/v1/Products({product_id})/Nodes(QUICKLOOK.jpg)/$value"
+            dl_resp = requests.get(thumb_url, headers=headers, timeout=60, stream=True)
+            if dl_resp.status_code == 200:
+                with open(save_path, "wb") as f:
+                    for chunk in dl_resp.iter_content(chunk_size=8192):
+                        f.write(chunk)
+                print(f"    ✅ ダウンロード完了: {save_path.name}")
+                return True
+            print(f"    ⚠️ QuickLookが見つかりません")
             return False
 
-        dl_url = ql_asset.get("DownloadLink", "")
-        if not dl_url:
-            print(f"    ⚠️ ダウンロードリンクがありません")
-            return False
-
+        dl_url = f"https://catalogue.dataspace.copernicus.eu/odata/v1/Products({product_id})/Nodes({ql_node['Name']})/$value"
         dl_resp = requests.get(dl_url, headers=headers, timeout=120, stream=True)
         dl_resp.raise_for_status()
 
