@@ -15,7 +15,6 @@ export default function SatelliteMap({ selectedImage, opacity }: SatelliteMapPro
   const leafletMapRef = useRef<any>(null);
   const overlayRef = useRef<any>(null);
 
-  // マップ初期化
   useEffect(() => {
     if (!mapRef.current || leafletMapRef.current) return;
 
@@ -25,7 +24,6 @@ export default function SatelliteMap({ selectedImage, opacity }: SatelliteMapPro
         zoom: INITIAL_ZOOM,
       });
 
-      // ダークベースマップ
       L.tileLayer(
         "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png",
         {
@@ -35,7 +33,6 @@ export default function SatelliteMap({ selectedImage, opacity }: SatelliteMapPro
         }
       ).addTo(map);
 
-      // 札幌駅マーカー
       L.circleMarker([SAPPORO.lat, SAPPORO.lon], {
         radius: 8,
         fillColor: "#00ff88",
@@ -56,7 +53,6 @@ export default function SatelliteMap({ selectedImage, opacity }: SatelliteMapPro
     };
   }, []);
 
-  // 衛星画像オーバーレイ更新
   useEffect(() => {
     if (!leafletMapRef.current || !selectedImage) return;
 
@@ -82,7 +78,6 @@ export default function SatelliteMap({ selectedImage, opacity }: SatelliteMapPro
     });
   }, [selectedImage]);
 
-  // 透明度更新
   useEffect(() => {
     if (overlayRef.current) {
       overlayRef.current.setOpacity(opacity);
