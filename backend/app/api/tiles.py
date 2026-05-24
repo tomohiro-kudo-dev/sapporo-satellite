@@ -8,11 +8,9 @@ router = APIRouter()
 def get_access_token():
     client_id = os.getenv("SH_CLIENT_ID")
     client_secret = os.getenv("SH_CLIENT_SECRET")
-
     if not client_id or not client_secret:
-        print("❌ SH_CLIENT_ID または SH_CLIENT_SECRET が未設定")
+        print("SH_CLIENT_ID or SH_CLIENT_SECRET not set")
         return None
-
     resp = requests.post(
         "https://identity.dataspace.copernicus.eu/auth/realms/CDSE/protocol/openid-connect/token",
         data={
@@ -22,16 +20,45 @@ def get_access_token():
         },
         timeout=10,
     )
-    print(f"🔑 トークン取得: {resp.status_code}")
+    print(f"Token status: {resp.status_code}")
     if resp.status_code == 200:
         return resp.json().get("access_token")
-    print(f"❌ トークンエラー: {resp.text}")
+    print(f"Token error: {resp.text}")
     return None
 
 
 @router.get("/{z}/{x}/{y}")
 def get_tile(z: int, x: int, y: int, date: str = "2024-06-15"):
     instance_id = os.getenv("SH_INSTANCE_ID", "124a1bf0-7510-4b11-9334-8eec5917c9d7")
-
     token = get_access_token()
-    if not token
+    if not token:
+        return Response(status_code=401)
+    url = f"https://services.sentinel-hub.com/ogc/wmts/{instance_id}"
+    params = {
+        "SERVICE": "WMTS",
+        "REQUEST": "GetTile",
+        "VERSION": "1.0.0",
+        "LAYER": "1_TRUE_COLOR",
+        "STYLE": "default",
+        "FORMAT": "image/jpeg",
+        "TILEMATRIXSET": "PopularWebMercator",
+        "TIME": date,
+        "TILEMATRIX": z,
+        "TILEROW": y,
+        "TILECOL": x,
+    }
+    headers = {"Authorization": f"Bearer {token}"}
+    try:
+        resp = requests.get(url, params=params, headers=headers, timeout=15)
+        print(f"Tile status: {resp.status_code}")
+        if resp.status_code != 200:
+            print(f"Tile error: {resp.text[:300]}")
+            return Response(status_code=resp.status_code)
+        return Response(
+            content=resp.content,
+            media_type="image/jpeg",
+            headers={"Cache-Control": "public, max-age=3600"},
+        )
+    except Exception as e:
+        print(f"Exception: {e}")
+        return Response(status_code=500)
