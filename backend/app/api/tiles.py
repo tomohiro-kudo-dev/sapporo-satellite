@@ -1,4 +1,3 @@
-cat > tiles.py << ''
 from fastapi import APIRouter, Response
 import requests
 import os
