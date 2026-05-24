@@ -34,15 +34,20 @@ export default function RootLayout({
           href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap"
           rel="stylesheet"
         />
-        <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-GEWV0V1CR3"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-GEWV0V1CR3');
-</script>
+        <script
+          async
+          src="https://www.googletagmanager.com/gtag/js?id=G-GEWV0V1CR3"
+        />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', 'G-GEWV0V1CR3');
+            `,
+          }}
+        />
       </head>
       <body>{children}</body>
     </html>
