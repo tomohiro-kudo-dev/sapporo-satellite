@@ -41,7 +41,7 @@ def get_tile(z: int, x: int, y: int, date: str = "2024-06-15"):
         "SERVICE": "WMTS",
         "REQUEST": "GetTile",
         "VERSION": "1.0.0",
-        "LAYER": "TRUE-COLOR-S2L2A",
+        "LAYER": "1_TRUE_COLOR",
         "STYLE": "default",
         "FORMAT": "image/jpeg",
         "TILEMATRIXSET": "PopularWebMercator256",
