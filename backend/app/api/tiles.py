@@ -1,3 +1,4 @@
+cat > tiles.py << 'EOF'
 from fastapi import APIRouter, Response
 import requests
 import os
@@ -9,7 +10,6 @@ def get_access_token():
     client_id = os.getenv("SH_CLIENT_ID")
     client_secret = os.getenv("SH_CLIENT_SECRET")
     if not client_id or not client_secret:
-        print("SH_CLIENT_ID or SH_CLIENT_SECRET not set")
         return None
     try:
         resp = requests.post(
@@ -59,3 +59,11 @@ def get_tile(z: int, x: int, y: int, date: str = "2024-06-15"):
             print(f"Tile error: {resp.text[:300]}")
             return Response(status_code=resp.status_code)
         return Response(
+            content=resp.content,
+            media_type="image/jpeg",
+            headers={"Cache-Control": "public, max-age=3600"},
+        )
+    except Exception as e:
+        print(f"Tile exception: {e}")
+        return Response(status_code=500)
+EOF
