@@ -25,11 +25,12 @@ def load_all_metadata() -> list[dict]:
     for json_file in sorted(METADATA_DIR.glob("*.json"), reverse=True):
         try:
             with open(json_file, "r", encoding="utf-8") as f:
-                entries.append(json.load(f))
+                entry = json.load(f)
+                entry.pop("is_mock", None)
+                entries.append(entry)
         except Exception:
             continue
     return entries
-
 
 @router.get("")
 def list_images(
