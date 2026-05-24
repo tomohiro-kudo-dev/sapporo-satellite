@@ -44,7 +44,7 @@ def get_tile(z: int, x: int, y: int, date: str = "2024-06-15"):
         "LAYER": "1_TRUE_COLOR",
         "STYLE": "default",
         "FORMAT": "image/jpeg",
-        "TILEMATRIXSET": "PopularWebMercator",
+        "TILEMATRIXSET": "WebMercatorQuad",
         "TIME": date,
         "TILEMATRIX": z,
         "TILEROW": y,
