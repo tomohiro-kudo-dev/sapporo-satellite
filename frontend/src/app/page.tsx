@@ -40,7 +40,7 @@ export default function HomePage() {
         <div className="header-right">
           {loading && <div className="loading-dot" />}
           {images.length > 0 && (
-            <span className="header-count">{images.length}枚取得済</span>
+              <span className="header-count">{images.length}件の観測データ</span>
           )}
         </div>
       </header>
