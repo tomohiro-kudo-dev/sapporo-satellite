@@ -66,4 +66,3 @@ def get_tile(z: int, x: int, y: int, date: str = "2024-06-15"):
     except Exception as e:
         print(f"Tile exception: {e}")
         return Response(status_code=500)
-EOF
