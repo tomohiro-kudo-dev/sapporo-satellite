@@ -45,4 +45,17 @@ def get_tile(z: int, x: int, y: int, date: str = "2024-06-15"):
         "LAYER": "1_TRUE_COLOR",
         "STYLE": "default",
         "FORMAT": "image/jpeg",
-        "TILEMATRIXSET": "PopularWebMercator
+        "TILEMATRIXSET": "PopularWebMercator",
+        "TIME": date,
+        "TILEMATRIX": z,
+        "TILEROW": y,
+        "TILECOL": x,
+    }
+    headers = {"Authorization": f"Bearer {token}"}
+    try:
+        resp = requests.get(url, params=params, headers=headers, timeout=15)
+        print(f"Tile status: {resp.status_code}")
+        if resp.status_code != 200:
+            print(f"Tile error: {resp.text[:300]}")
+            return Response(status_code=resp.status_code)
+        return Response(
