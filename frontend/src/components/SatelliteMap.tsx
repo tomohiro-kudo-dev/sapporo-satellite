@@ -64,7 +64,7 @@ export default function SatelliteMap({ selectedImage, opacity }: SatelliteMapPro
 
       const date = selectedImage.date;
       const apiBase = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
-      const tileUrl = `${apiBase}/api/gee/{z}/{x}/{y}?date=${date}`;
+      const tileUrl = `${apiBase}/api/tiles/{z}/{x}/{y}?date=${date}`;
 
       const layer = L.tileLayer(tileUrl, {
         opacity: opacity,
