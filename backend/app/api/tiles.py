@@ -11,8 +11,8 @@ def get_access_token():
     if not client_id or not client_secret:
         print("SH_CLIENT_ID or SH_CLIENT_SECRET not set")
         return None
-    resp = requests.post(
-        "https://identity.dataspace.copernicus.eu/auth/realms/CDSE/protocol/openid-connect/token",
+        resp = requests.post(
+            "https://services.sentinel-hub.com/auth/realms/main/protocol/openid-connect/token",
         data={
             "grant_type": "client_credentials",
             "client_id": client_id,
