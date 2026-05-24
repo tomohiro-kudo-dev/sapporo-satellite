@@ -55,7 +55,7 @@ def get_tile(z: int, x: int, y: int, date: str = "2024-06-15"):
         resp = requests.get(url, params=params, headers=headers, timeout=15)
         print(f"Tile status: {resp.status_code}")
         if resp.status_code != 200:
-            print(f"Tile error: {resp.text[:300]}")
+            print(f"Tile error: {resp.text[:1000]}")
             return Response(status_code=resp.status_code)
         return Response(
             content=resp.content,
