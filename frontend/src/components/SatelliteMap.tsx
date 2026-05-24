@@ -68,7 +68,7 @@ export default function SatelliteMap({ selectedImage, opacity }: SatelliteMapPro
 
       const layer = L.tileLayer(tileUrl, {
         opacity: opacity,
-        attribution: "Google Earth Engine · Copernicus Sentinel-2 © ESA",
+        attribution: "Copernicus Sentinel-2 © ESA",
         tileSize: 256,
         maxZoom: 18,
       });
