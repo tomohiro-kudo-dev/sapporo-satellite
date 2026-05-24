@@ -6,7 +6,6 @@ import TimelineSlider from "@/components/TimelineSlider";
 import ControlPanel from "@/components/ControlPanel";
 import { AlertCircle, Satellite } from "lucide-react";
 
-// LeafletはSSR非対応のためダイナミックインポート
 const SatelliteMap = dynamic(() => import("@/components/SatelliteMap"), {
   ssr: false,
   loading: () => (
@@ -26,7 +25,6 @@ export default function HomePage() {
 
   return (
     <div className="app-root">
-      {/* ヘッダー */}
       <header className="app-header">
         <div className="header-left">
           <div className="header-icon-wrap">
@@ -39,15 +37,10 @@ export default function HomePage() {
         </div>
         <div className="header-right">
           {loading && <div className="loading-dot" />}
-          {images.length > 0 && (
-              <span className="header-count">{images.length}件の観測データ</span>
-          )}
         </div>
       </header>
 
-      {/* メインコンテンツ */}
       <main className="app-main">
-        {/* エラー表示 */}
         {error && (
           <div className="error-banner">
             <AlertCircle size={16} />
@@ -62,11 +55,8 @@ export default function HomePage() {
           </div>
         )}
 
-        {/* 地図エリア */}
         <div className="map-area">
           <SatelliteMap selectedImage={selectedImage} opacity={opacity} />
-
-          {/* 右パネル (コントロール) */}
           <div className="side-panel">
             <ControlPanel
               opacity={opacity}
@@ -79,7 +69,6 @@ export default function HomePage() {
           </div>
         </div>
 
-        {/* 下部タイムラインスライダー */}
         <div className="bottom-bar">
           {loading ? (
             <div className="bottom-loading">
@@ -88,10 +77,7 @@ export default function HomePage() {
             </div>
           ) : images.length === 0 ? (
             <div className="bottom-empty">
-              <p>
-                画像がありません。バックエンドで{" "}
-                <code>python generate_mock_data.py</code> を実行してください。
-              </p>
+              <p>データがありません。</p>
             </div>
           ) : (
             <TimelineSlider
@@ -105,11 +91,10 @@ export default function HomePage() {
         </div>
       </main>
 
-      {/* フッター */}
       <footer className="app-footer">
-        <span>© 2026 Sapporo Satellite Viewer</span>
+        <span>© {new Date().getFullYear()} Sapporo Satellite Viewer</span>
         <span>Copernicus Sentinel-2 · ESA</span>
-        <a
+        
           href="https://github.com/tomohiro-kudo-dev/sapporo-satellite"
           target="_blank"
           rel="noreferrer"
