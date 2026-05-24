@@ -1,4 +1,4 @@
-cat > tiles.py << 'EOF'
+cat > tiles.py << ''
 from fastapi import APIRouter, Response
 import requests
 import os
