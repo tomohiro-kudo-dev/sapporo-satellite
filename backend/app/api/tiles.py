@@ -4,14 +4,15 @@ import os
 
 router = APIRouter()
 
+
 def get_access_token():
     client_id = os.getenv("SH_CLIENT_ID")
     client_secret = os.getenv("SH_CLIENT_SECRET")
-    
+
     if not client_id or not client_secret:
         print("❌ SH_CLIENT_ID または SH_CLIENT_SECRET が未設定")
         return None
-    
+
     resp = requests.post(
         "https://identity.dataspace.copernicus.eu/auth/realms/CDSE/protocol/openid-connect/token",
         data={
@@ -31,6 +32,6 @@ def get_access_token():
 @router.get("/{z}/{x}/{y}")
 def get_tile(z: int, x: int, y: int, date: str = "2024-06-15"):
     instance_id = os.getenv("SH_INSTANCE_ID", "124a1bf0-7510-4b11-9334-8eec5917c9d7")
-    
+
     token = get_access_token()
-    if not token:
+    if not token
