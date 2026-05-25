@@ -63,7 +63,6 @@ export default function ControlPanel({
           <div className="info-grid">
             <InfoRow label="観測日" value={selectedImage.date} />
             <InfoRow label="雲量" value={`${selectedImage.cloud_coverage.toFixed(1)}%`} />
-            <InfoRow label="取得済" value={`${totalCount}枚`} />
             {selectedImage.is_mock && (
               <InfoRow label="種別" value="モックデータ" accent />
             )}
