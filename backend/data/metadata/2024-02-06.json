@@ -1,0 +1,21 @@
+{
+  "date": "2024-02-06",
+  "year": 2024,
+  "month": 2,
+  "product_id": "c0b3b982-bc85-4edd-a7f0-5b93fdb4791f",
+  "product_name": "S2B_MSIL2A_20240206T012839_N0510_R074_T54TWN_20240206T032206.SAFE",
+  "cloud_coverage": 19.0,
+  "downloaded": false,
+  "image_path": null,
+  "bbox": {
+    "west": 141.3208,
+    "south": 43.0387,
+    "east": 141.3808,
+    "north": 43.0987
+  },
+  "center": {
+    "lat": 43.0687,
+    "lon": 141.3508
+  },
+  "fetched_at": "2026-06-01T06:11:12.216799Z"
+}

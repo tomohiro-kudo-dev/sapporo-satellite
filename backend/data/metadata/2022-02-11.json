@@ -1,0 +1,21 @@
+{
+  "date": "2022-02-11",
+  "year": 2022,
+  "month": 2,
+  "product_id": "16fab487-ea83-4e93-afe7-6536961db33a",
+  "product_name": "S2A_MSIL2A_20220211T012801_N0510_R074_T54TWN_20240514T022158.SAFE",
+  "cloud_coverage": 13.0,
+  "downloaded": false,
+  "image_path": null,
+  "bbox": {
+    "west": 141.3208,
+    "south": 43.0387,
+    "east": 141.3808,
+    "north": 43.0987
+  },
+  "center": {
+    "lat": 43.0687,
+    "lon": 141.3508
+  },
+  "fetched_at": "2026-06-01T06:08:02.618226Z"
+}
